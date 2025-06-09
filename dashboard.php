@@ -36,7 +36,6 @@ if (isset($_GET['delete_car_id'])) {
 if (isset($_GET['delete_service_id'])) {
     $service_id = (int)$_GET['delete_service_id'];
 
-    // Verify the service belongs to a car owned by the logged-in user
     $stmt = $mysqli->prepare("SELECT s.id FROM services s JOIN cars c ON s.car_id = c.id WHERE s.id = ? AND c.user_id = ?");
     $stmt->bind_param("ii", $service_id, $user_id);
     $stmt->execute();
@@ -100,10 +99,26 @@ $cars = $mysqli->query("SELECT * FROM cars WHERE user_id = $user_id");
                         echo "<li class='list-group-item'>Žiadne blížiace sa servisy</li>";
                     } else {
                         while ($s = $services->fetch_assoc()) {
-                            $formatted_date = (new DateTime($s['service_date']))->format('d.m.Y');
+                            $service_date = new DateTime($s['service_date']);
+                            $formatted_date = $service_date->format('d.m.Y');
+                            $now = new DateTime();
+                            $interval = $now->diff($service_date);
+                            $days_left = (int)$interval->format('%r%a');
+
+                            if ($days_left === 0) {
+                                $countdown = "<span class='badge bg-warning text-dark'>Dnes</span>";
+                            } elseif ($days_left === 1) {
+                                $countdown = "<span class='badge bg-info text-dark'>Zajtra</span>";
+                            } elseif ($days_left > 1) {
+                                $countdown = "<span class='badge bg-success'>O $days_left dní</span>";
+                            } elseif ($days_left === -1) {
+                                $countdown = "<span class='badge bg-danger'>Včera</span>";
+                            } else {
+                                $countdown = "<span class='badge bg-danger'>Pred " . abs($days_left) . " dňami</span>";
+                            }
                             echo "<li class='list-group-item d-flex justify-content-between align-items-center'>
                                     <div>
-                                        <strong>{$s['service_type']}</strong> – {$formatted_date} <br> {$s['note']}
+                                        <strong>{$s['service_type']}</strong> – {$formatted_date} {$countdown}<br> {$s['note']}
                                     </div>
                                     <a href='dashboard.php?delete_service_id={$s['id']}' class='btn btn-danger btn-sm' onclick='return confirm(\"Naozaj chcete vymazať tento servis?\")'>Vymazať</a>
                                   </li>";
@@ -116,4 +131,4 @@ $cars = $mysqli->query("SELECT * FROM cars WHERE user_id = $user_id");
     <?php endwhile; ?>
 </div>
 </body>
-</html>
+</html

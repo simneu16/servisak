@@ -13,6 +13,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->fetch();
         if (password_verify($_POST['password'], $hash)) {
             $_SESSION['user_id'] = $user_id;
+            if (!empty($_POST['remember'])) {
+                setcookie('user_id', $user_id, time() + (86400 * 30), "/"); // platnosť 30 dní
+            }
             header("Location: dashboard.php");
             exit();
         } else {
@@ -42,6 +45,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="mb-3">
             <label for="password" class="form-label">Heslo</label>
             <input type="password" class="form-control" name="password" required>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="remember" id="remember">
+            <label class="form-check-label" for="remember">Zapamätať si ma</label>
         </div>
         <button type="submit" class="btn btn-primary">Prihlásiť sa</button>
         <a href="index.php" class="btn btn-link">Späť</a>
