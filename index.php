@@ -2,17 +2,15 @@
 session_start();
 
 if (isset($_SESSION['user_id'])) {
-    header("Location: dashboard.php");
+    header("Location: ./dashboard.php");
     exit;
 } elseif (isset($_COOKIE['user_id'])) {
     $_SESSION['user_id'] = $_COOKIE['user_id'];
-    header("Location: dashboard.php");
-    exit;
-} else {
-    header("Location: login.php");
+    header("Location: ./dashboard.php");
     exit;
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="sk">
 <head>
@@ -24,9 +22,9 @@ if (isset($_SESSION['user_id'])) {
 <div class="container mt-5">
     <div class="text-center">
         <h1 class="mb-4">Vitaj v aplikácii Servisák!</h1>
-        <p class="lead">Spravuj svoje vozidlá a servisné termíny jednoducho a prehľadne.</p>
-        <a href="login.php" class="btn btn-primary m-2">Prihlásiť sa</a>
-        <a href="register.php" class="btn btn-outline-primary m-2">Registrovať sa</a>
+        <p class="lead">Spravuj svoje vozidlá a servisné prehliadky jednoducho a pohodlne.</p>
+        <a href="./login.php" class="btn btn-primary m-2">Prihlásiť sa</a>
+        <a href="./register.php" class="btn btn-outline-primary m-2">Registrovať sa</a>
     </div>
 </div>
 </body>
